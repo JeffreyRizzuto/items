@@ -19,12 +19,6 @@
  */
 item_t *ReadItemsFromFile(char *file)
 {
-/*
- * As a hint, here is a line that would print success or failure of a line
- * in the proper format.  Delete this crap code but you can use the format for
- * your own read in from file.  You will simply read in lines until one fails,
- * at which point you return the base ptr to all allocated structures.
- */
 
    FILE *fpin;
    fpin = fopen("swords.dat","r");
@@ -33,6 +27,7 @@ item_t *ReadItemsFromFile(char *file)
       prinf("swords.dat is missing, exiting the program");
       exit(1);
    }
+
    /* Multi array generator here,looks like this *
     *                                            *
     *    Description   Damage   Cost   Weight    *
@@ -42,8 +37,34 @@ item_t *ReadItemsFromFile(char *file)
     *    sword         10       10.0   8.0       *
     *    fine sword    12       100.0  7.2       *
     *    two h sword   20       200.0  15.0      *
-    *********************************************/
+    *                                            */
+
+   unsigned int number_of_items; /*number of items in the file */
+   int tempch; /* making a temp character */
    
+    while (ch = getc(fpin)!= EOF))
+        if (ch == '\n')
+            number_of_items++;
+
+    /* allocating an array of pointers to hold each item*/
+
+    char **items = malloc(number_of_items*sizeof(char*));
+    
+    int i;
+
+    for(i=0;i<number_of_items;i++)
+    {
+       /* project 2 string thing here in a loop until all lines are read and all arrays made */
+    }
+    
+
+/*
+ * As a hint, here is a line that would print success or failure of a line
+ * in the proper format.  Delete this crap code but you can use the format for
+ * your own read in from file.  You will simply read in lines until one fails,
+ * at which point you return the base ptr to all allocated structures.
+ */  
+      
 #if 0
    if (fscanf(fpin, " '%[^']' %d %f %f", name, &dam, &cost, &weight) == 4)
       printf("Read the line!");
