@@ -25,6 +25,25 @@ item_t *ReadItemsFromFile(char *file)
  * your own read in from file.  You will simply read in lines until one fails,
  * at which point you return the base ptr to all allocated structures.
  */
+
+   FILE *fpin;
+   fpin = fopen("swords.dat","r");
+   if(fpin == NULL)
+   {
+      prinf("swords.dat is missing, exiting the program");
+      exit(1);
+   }
+   /* Multi array generator here,looks like this *
+    *                                            *
+    *    Description   Damage   Cost   Weight    *
+    *                                            *
+    *    sharp tool    4        1.5    1.1       *
+    *    rusty sword   8        5.0    8.1       *
+    *    sword         10       10.0   8.0       *
+    *    fine sword    12       100.0  7.2       *
+    *    two h sword   20       200.0  15.0      *
+    *********************************************/
+   
 #if 0
    if (fscanf(fpin, " '%[^']' %d %f %f", name, &dam, &cost, &weight) == 4)
       printf("Read the line!");
