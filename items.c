@@ -24,7 +24,7 @@ item_t *ReadItemsFromFile(char *file)
    fpin = fopen("swords.dat","r");
    if(fpin == NULL)  /* If no file was read, display message and exit */
    {
-      prinf("swords.dat is missing, exiting the program");
+      printf("swords.dat is missing, exiting the program");
       exit(1);
    }
 
