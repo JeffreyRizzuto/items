@@ -11,7 +11,7 @@
 
 /*
  * This function reads all items in file, and returns them in file-order
- * in a dynamically created list.  Each line of the file is one item, 
+ * in a dynamically created list.  Each line of the file is one item,
  * and has format:
  * '<description>' <damage> <cost> <weight>
  * RETURNS: base pointer to items in file in file order.  NULL if file does
@@ -28,7 +28,7 @@ item_t *ReadItemsFromFile(char *file)
       exit(1);
    }
 
-   /* Multi array generator here,looks like this *
+   /*  array generator here,looks like this      *
     *                                            *
     *    Description   Damage   Cost   Weight    *
     *                                            *
@@ -37,15 +37,43 @@ item_t *ReadItemsFromFile(char *file)
     *    sword         10       10.0   8.0       *
     *    fine sword    12       100.0  7.2       *
     *    two h sword   20       200.0  15.0      *
-    *                                            */    
+    *                                            */
+   while(1)
+      item_t *itb;
+      int i;
+      itb = malloc(sizeof(item_t));
+      assert(itb);
+      if(sscanf(fpin, "s %f %f %d"itb->name,itb->cost,itb->weight,itb->dam)!=4)
+      {
+         printf(" A Line could not scan correctly");
+         exit(2);
+      }
+      node = malloc (sizeof (Data));
+        if (node == NULL) {
+            printf ("Ran out of memory\n");
+            return 1;
+        }
+
+
+      /*
+      itb->name =
+      itb->cost =
+      itb->weight =
+      itb->dam =
+      itb->next = NULL;
+      */
+
+
+
+
 
 /*
  * As a hint, here is a line that would print success or failure of a line
  * in the proper format.  Delete this crap code but you can use the format for
  * your own read in from file.  You will simply read in lines until one fails,
  * at which point you return the base ptr to all allocated structures.
- */  
-      
+ */
+
 #if 0
    if (fscanf(fpin, " '%[^']' %d %f %f", name, &dam, &cost, &weight) == 4)
       printf("Read the line!");
@@ -78,9 +106,9 @@ void PrintItemTable
 )
 {
    /* declarations here! */
-   fprintf(fpout, 
+   fprintf(fpout,
    " NUM  NAME                             DAMAGE          COST    WEIGHT\n");
-   fprintf(fpout, 
+   fprintf(fpout,
    "====  ===============================  ======  ============  ========\n");
    /* print all the lines */
     printf("\n");
@@ -105,14 +133,7 @@ void WriteItemsToFile
  */
 int CountItems(item_t *itb)
 {
-   unsigned int number_of_items;
-   int tempch;
-   
-    while (tempch = getc(fpin)!= EOF))
-        if (tempch == '\n')
-            number_of_items++;
-   rewind(fpin); /*??? points fpin back to the start of the file ???*/
-   return(0);
+
 }
 
 /*
@@ -152,7 +173,7 @@ item_t *DupItem(item_t *old)
 /*
  * This function adds item new at position pos in list itb.  Pos should be
  * between 0 and N (number of items in list):
- * If pos==0, then item becomes the new base pointer for list.  
+ * If pos==0, then item becomes the new base pointer for list.
  * else if pos==N, the item is added to the end of the list.
  * otherwise, it is added internal to the list.
  * RETURNS: possibly new base ptr of list with added item
@@ -173,7 +194,7 @@ item_t *AddItemAtPos
  * Functions for milestone 3
  * =========================
  */
-/* 
+/*
  * This function reverses the item order in list pointed to by itb
  * RETURNS: base pointer of list in opposite order
  * NOTE: the old list is destroyed in making the new!
