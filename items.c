@@ -22,7 +22,17 @@ item_t *getItem(FILE *fpin,int line_number)
    item_t *item_list;
    item_list = malloc(sizeof(item_t));
    assert(item_list);
-   if(fscanf(fpin, " '%[^']' %d %f %f",item_list->name,&item_list->
+   char *The_Item;
+   int BUFFER = 2;
+   The_Item = malloc(BUFFER*sizeof(char));
+   if(fgets(The_Item, BUFFER, fpin) != NULL) 
+   {   
+      if (*The_Item[strlen(The_Item)-1] == '\n')
+         break;
+      BUFFER++; 
+      The_Item = realloc(The_Item,BUFFER*sizeof(char));           
+   }   
+   if(fscanf(The_Item, " '%[^']' %d %f %f",item_list->name,&item_list->
                    dam,&item_list->cost,&item_list->&weight)!=4)
             {
                printf("line %d of swords.dat could not be read, exiting",line_number);
