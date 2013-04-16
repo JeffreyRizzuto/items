@@ -17,13 +17,13 @@
  * RETURNS: base pointer to items in file in file order.  NULL if file does
  *          not exist, or has no validly formated lines.
  */
- item_t *getItem(FILE *fpin,int line_number)
+item_t *getItem(FILE *fpin,int line_number)
 {
    item_t *item_list;
    item_list = malloc(sizeof(item_t));
    assert(item_list);
    if(fscanf(fpin, " '%[^']' %d %f %f",item_list->name,&item_list->
-                   dam,&item_list->cost,&item_list->weight)!=4)
+                   dam,&item_list->cost,&item_list->&weight)!=4)
             {
                printf("line %d of swords.dat could not be read, exiting",line_number);
                exit(2);
@@ -48,6 +48,8 @@ item_t *ReadItemsFromFile(char *file)
    while(1)
    {
       int line_number = 1;
+      if(fpin == EOF && fpin == NULL)
+         break;
       if (itb==NULL)/*if we haven't done anything yet*/
          itb = items_list = getItem(fpin,line_number);
       else/*we have done stuff, lets add more */
@@ -112,7 +114,7 @@ void PrintItemTable
       if(fprintf(fpout, " '%[^']' %d %f %f",item_list->name,&itemlist->
                    dam,item_list->cost,item_list->weight)!=4)
                    {
-                      printf("line %d of swords.dat could not be read, exiting",line_number);
+                      printf("Problem Printing a Line",);
                       exit(2);
                    }
       printf("\n");
