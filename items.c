@@ -17,6 +17,21 @@
  * RETURNS: base pointer to items in file in file order.  NULL if file does
  *          not exist, or has no validly formated lines.
  */
+ item_t *getItem(FILE *fpin,int line_number)
+{
+   item_t *item_list;
+   item_list = malloc(sizeof(item_t));
+   assert(item_list);
+   if(fscanf(fpin, " '%[^']' %d %f %f",item_list->name,&item_list->
+                   dam,&item_list->cost,&item_list->weight)!=4)
+            {
+               printf("line %d of swords.dat could not be read, exiting",line_number);
+               exit(2);
+            }
+   item_list->next = NULL;
+   return(item_list);
+}
+
 item_t *ReadItemsFromFile(char *file)
 {
 
@@ -38,41 +53,60 @@ item_t *ReadItemsFromFile(char *file)
     *    fine sword    12       100.0  7.2       *
     *    two h sword   20       200.0  15.0      *
     *                                            */
+   item_t *itb=NULL;/* base pointer to the start of the list*/
+   item_t *items_list;/*??? NULL list ??? */
    while(1)
-      item_t *itb;
-      int i;
-      itb = malloc(sizeof(item_t));
-      assert(itb);
-      if(sscanf(fpin, "s %f %f %d"itb->name,itb->cost,itb->weight,itb->dam)!=4)
+   {
+      int line_number = 1;
+      if (itb==NULL)/*if we haven't done anything yet*/
+         itb = items_list = getItem(fpin,line_number);
+      else/*we have done stuff, lets add more */
       {
-         printf(" A Line could not scan correctly");
-         exit(2);
+         items_list->next = getItem(fpin,line_number);/*create a new item at the end of the last one*/
+         items_list = items_list->next;/*??? not sure what this does???*/
+
       }
-      node = malloc (sizeof (Data));
-        if (node == NULL) {
-            printf ("Ran out of memory\n");
-            return 1;
-        }
+      line_number++;
+   }
+   return(itb);/*return base pointer to the start of all items*/
+}
 
 
-      /*
-      itb->name =
-      itb->cost =
-      itb->weight =
-      itb->dam =
-      itb->next = NULL;
-      */
+      /************** OLD CODE  ***************
+      if (itb==NULL)
+      {
+         items_list = malloc(sizeof(item_t));
+         assert(items_list);
+         if(sscanf(fpin, "%s %f %f %d",items_list->name,items_list->
+                   cost,items_list->weight,items_list->dam)!=4)
+         {
+            printf(" A item could not scan correctly");
+            exit(2);
+         }
+         items_list->next=NULL;
+         itb = items_list;
+      }
+      else
+      {
+         items_list = malloc(sizeof(item_t));
+         if(sscanf(fpin, "%s %f %f %d",items_list->name,items_list->
+                   cost,items_list->weight,items_list->dam)!=4)
+            {
+               printf(" A item could not scan correctly");
+               exit(2);
+            }
+            items_list->next = items_list;
+            items_list->next = NULL;
+      }
 
-
-
-
+      *********************************************/
 
 /*
  * As a hint, here is a line that would print success or failure of a line
  * in the proper format.  Delete this crap code but you can use the format for
  * your own read in from file.  You will simply read in lines until one fails,
  * at which point you return the base ptr to all allocated structures.
- */
+
 
 #if 0
    if (fscanf(fpin, " '%[^']' %d %f %f", name, &dam, &cost, &weight) == 4)
@@ -82,6 +116,9 @@ item_t *ReadItemsFromFile(char *file)
 #endif
    return(NULL);
 }
+*/
+
+
 
 /*
  * This routine frees all storage associated with entire list itb
