@@ -42,17 +42,7 @@ item_t *ReadItemsFromFile(char *file)
       printf("swords.dat is missing, exiting the program");
       exit(1);
    }
-
-   /*  array generator here,looks like this      *
-    *                                            *
-    *    Description   Damage   Cost   Weight    *
-    *                                            *
-    *    sharp tool    4        1.5    1.1       *
-    *    rusty sword   8        5.0    8.1       *
-    *    sword         10       10.0   8.0       *
-    *    fine sword    12       100.0  7.2       *
-    *    two h sword   20       200.0  15.0      *
-    *                                            */
+   
    item_t *itb=NULL;/* base pointer to the start of the list*/
    item_t *items_list;/*??? NULL list ??? */
    while(1)
@@ -70,36 +60,6 @@ item_t *ReadItemsFromFile(char *file)
    }
    return(itb);/*return base pointer to the start of all items*/
 }
-
-
-      /************** OLD CODE  ***************
-      if (itb==NULL)
-      {
-         items_list = malloc(sizeof(item_t));
-         assert(items_list);
-         if(sscanf(fpin, "%s %f %f %d",items_list->name,items_list->
-                   cost,items_list->weight,items_list->dam)!=4)
-         {
-            printf(" A item could not scan correctly");
-            exit(2);
-         }
-         items_list->next=NULL;
-         itb = items_list;
-      }
-      else
-      {
-         items_list = malloc(sizeof(item_t));
-         if(sscanf(fpin, "%s %f %f %d",items_list->name,items_list->
-                   cost,items_list->weight,items_list->dam)!=4)
-            {
-               printf(" A item could not scan correctly");
-               exit(2);
-            }
-            items_list->next = items_list;
-            items_list->next = NULL;
-      }
-
-      *********************************************/
 
 /*
  * As a hint, here is a line that would print success or failure of a line
