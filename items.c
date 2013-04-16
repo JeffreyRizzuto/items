@@ -107,8 +107,18 @@ void PrintItemTable
    " NUM  NAME                             DAMAGE          COST    WEIGHT\n");
    fprintf(fpout,
    "====  ===============================  ======  ============  ========\n");
+   while(1)
+   {
+      if(fprintf(fpout, " '%[^']' %d %f %f",item_list->name,&itemlist->
+                   dam,item_list->cost,item_list->weight)!=4)
+                   {
+                      printf("line %d of swords.dat could not be read, exiting",line_number);
+                      exit(2);
+                   }
+      printf("\n");
+   }
    /* print all the lines */
-    printf("\n");
+    printf("Table End\n");
 }
 
 /*
