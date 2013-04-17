@@ -42,15 +42,13 @@ item_t *getItem(FILE *fpin,int line_number)
 
 item_t *ReadItemsFromFile(FILE *fpin)
 {
-
-   
+   int line_number = 1;
    item_t *itb=NULL;/* base pointer to the start of the list*/
    item_t *items_list;/*??? NULL list ??? */
    //printf("starting loop\n");
    while(1)
    {
       //printf("in loop\n");
-      int line_number = 1;
       if(fpin == '\0')   						/*!!! FIX THIS LINE !!!*/
       {
          //printf("fpin was null\n");
@@ -66,7 +64,6 @@ item_t *ReadItemsFromFile(FILE *fpin)
          //printf("itb was NOT null\n");
          items_list->next = getItem(fpin,line_number);/*create a new item at the end of the last one*/
          items_list = items_list->next;/*??? not sure what this does???*/
-
       }
       //printf("end of while 1, linenumber++\n");
       line_number++;
