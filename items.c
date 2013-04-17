@@ -19,82 +19,65 @@
  */
 item_t *getItem(FILE *fpin,int line_number)
 {
+   //printf("in get item\n");
    item_t *item_list;
    item_list = malloc(sizeof(item_t));
    assert(item_list);
-   char *The_Item;
-   int BUFFER = 2;
-   The_Item = malloc(BUFFER*sizeof(char));
-   if(fgets(The_Item, BUFFER, fpin) != NULL) 
-   {   
-      if (*The_Item[strlen(The_Item)-1] == '\n')
-         break;
-      BUFFER++; 
-      The_Item = realloc(The_Item,BUFFER*sizeof(char));           
-   }   
-   if(fscanf(The_Item, " '%[^']' %d %f %f",item_list->name,&item_list->
-                   dam,&item_list->cost,&item_list->&weight)!=4)
-            {
-               printf("line %d of swords.dat could not be read, exiting",line_number);
-               exit(2);
-            }
+
+   //printf("About to scan file\n");
+   if(fscanf(fpin,"'%[^']' %d %f %f'\n'",item_list->name,&item_list->
+                   dam,&item_list->cost,&item_list->weight)!=4)
+   {
+      printf("line %d of swords.dat could not be read, exiting\n",line_number);
+      exit(2);
+   }
+   printf("\n");
+
+   char temp;
+   while(temp = fgetc(fpin)!='\n' || temp != '\0');
    item_list->next = NULL;
+   //printf("retuning list\n");
    return(item_list);
 }
 
-item_t *ReadItemsFromFile(char *file)
+item_t *ReadItemsFromFile(FILE *fpin)
 {
 
-   FILE *fpin;
-   fpin = fopen("swords.dat","r");
-   if(fpin == NULL)  /* If no file was read, display message and exit */
-   {
-      printf("swords.dat is missing, exiting the program");
-      exit(1);
-   }
    
    item_t *itb=NULL;/* base pointer to the start of the list*/
    item_t *items_list;/*??? NULL list ??? */
+   //printf("starting loop\n");
    while(1)
    {
+      //printf("in loop\n");
       int line_number = 1;
-      if(fpin == EOF && fpin == NULL)
+      if(fpin == '\0')   						/*!!! FIX THIS LINE !!!*/
+      {
+         //printf("fpin was null\n");
          break;
+      }
       if (itb==NULL)/*if we haven't done anything yet*/
+         {
+         //printf("itb was null\n");
          itb = items_list = getItem(fpin,line_number);
+         }
       else/*we have done stuff, lets add more */
       {
+         //printf("itb was NOT null\n");
          items_list->next = getItem(fpin,line_number);/*create a new item at the end of the last one*/
          items_list = items_list->next;/*??? not sure what this does???*/
 
       }
+      //printf("end of while 1, linenumber++\n");
       line_number++;
    }
+   rewind(fpin);  
    return(itb);/*return base pointer to the start of all items*/
 }
 
-/*
- * As a hint, here is a line that would print success or failure of a line
- * in the proper format.  Delete this crap code but you can use the format for
- * your own read in from file.  You will simply read in lines until one fails,
- * at which point you return the base ptr to all allocated structures.
-
-
-#if 0
-   if (fscanf(fpin, " '%[^']' %d %f %f", name, &dam, &cost, &weight) == 4)
-      printf("Read the line!");
-   else
-      printf("Failed to read line!");
-#endif
-   return(NULL);
-}
-*/
 
 
 
-/*
- * This routine frees all storage associated with entire list itb
- */
 void KillAllItems(item_t *itb)
 {
 }
@@ -108,6 +91,7 @@ void KillAllItems(item_t *itb)
  *    13 characters for cost, with 2 decimal places printed
  *    9 characters for weight, with 2 decimal places printes
  */
+ 
 void PrintItemTable
 (
    FILE *fpout,    /* FILE stream to print to (set to stdout for screen) */
@@ -121,18 +105,18 @@ void PrintItemTable
    "====  ===============================  ======  ============  ========\n");
    while(1)
    {
-      if(fprintf(fpout, " '%[^']' %d %f %f",item_list->name,&itemlist->
-                   dam,item_list->cost,item_list->weight)!=4)
+      if(fprintf(fpout, "%s %d %f %f",itb->name,itb->
+                   dam,itb->cost,itb->weight)!=4)
                    {
-                      printf("Problem Printing a Line",);
+                      printf("Problem Printing a Line");
                       exit(2);
                    }
       printf("\n");
+      itb = itb->next;
    }
    /* print all the lines */
-    printf("Table End\n");
+    //printf("Table End\n");
 }
-
 /*
  * This function prints all items in itb to the a file with name file.  Each
  * line of the file is one item, and has format:
