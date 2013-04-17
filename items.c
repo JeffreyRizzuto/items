@@ -49,7 +49,7 @@ item_t *ReadItemsFromFile(FILE *fpin)
    while(1)
    {
       //printf("in loop\n");
-      if(fpin == '\0')   						/*!!! FIX THIS LINE !!!*/
+      if(fgetc(fpin)==EOF)   			/*!!! TEST THIS LINE(might run on first loop, not sure) !!!*/
       {
          //printf("fpin was null\n");
          break;
