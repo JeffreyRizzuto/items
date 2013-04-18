@@ -30,7 +30,7 @@ item_t *getItem(FILE *fpin,char *file, int line_number)
       printf("Program will now exit\n");
       exit(2);
    }
-   while((temp = fgetc(fpin))!=('\n'));
+   while((temp = fgetc(fpin))!=('\n')&&(temp!=EOF));
    item_list->next = NULL;
    return(item_list);
 }
@@ -39,20 +39,15 @@ item_t *ReadItemsFromFile(char *file)
 {
    FILE *fpin;
    fpin = fopen(file,"r");
-   assert(fpin);
-   fpos_t current_position;
-   int line_number = 1;
+   if(fpin==NULL)
+      return(NULL);
+   int line_number = 1;/*# line in file*/
    item_t *itb=NULL;/* base pointer to the start of the list*/
-   item_t *items_list;/*??? NULL list ??? */
+   item_t *items_list;/*the list */
    while(1)
    {
-      fgetpos(fpin,&current_position);
-      fseek(fpin,8,SEEK_CUR);
-      if(getc(fpin)==EOF)
+      if(feof(fpin))
          break;
-      else
-         fsetpos(fpin,&current_position);
-
       if (itb==NULL)/*if we haven't done anything yet*/
          {
          itb = items_list = getItem(fpin,file,line_number);
@@ -66,7 +61,6 @@ item_t *ReadItemsFromFile(char *file)
       }
       line_number++;
    }
-   /*rewind(fpin);*/
    fclose(fpin);
    return(itb);/*return base pointer to the start of all items*/
 }
@@ -105,19 +99,11 @@ void PrintItemTable
    while(1)
    {
       printf("%04d  ",item_number);
-      if(itb->next==NULL)
-      {
-         fprintf(fpout, "%-31s  %-6d  %-12.2f  %-9.2f\n",itb->name,itb->
-                   dam,itb->cost,itb->weight);
-         break;
-      }
       fprintf(fpout, "%-31s  %-6d  %-12.2f  %-9.2f\n",itb->name,itb->
-                   dam,itb->cost,itb->weight);/*!!! This line needs to be correctly formated*/
-                   /*{
-                      printf("Problem Printing Line Number %d, exiting\n", item_number);
-                      exit(2);
-                   }
-                   */
+                   dam,itb->cost,itb->weight);
+                   
+      if(itb->next==NULL)
+         break;
       itb = itb->next;
       item_number++;
       if(item_number == 9999)
