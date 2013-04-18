@@ -7,8 +7,7 @@ typedef struct items item_t;
 struct items
 {
    char name[32];
-   float cost;
-   float weight;
+   float cost, weight;
    int dam;
    item_t *next;
 };
