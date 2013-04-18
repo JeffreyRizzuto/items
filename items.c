@@ -17,66 +17,68 @@
  * RETURNS: base pointer to items in file in file order.  NULL if file does
  *          not exist, or has no validly formated lines.
  */
-item_t *getItem(FILE *fpin,int line_number)
+item_t *getItem(FILE *fpin,char *file, int line_number)
 {
-   //printf("in get item\n");
    item_t *item_list;
    item_list = malloc(sizeof(item_t));
    assert(item_list);
-
-   //printf("About to scan file\n");
-   if(fscanf(fpin,"'%[^']' %d %f %f'\n'",item_list->name,&item_list->
+   int temp;
+   if(fscanf(fpin,"'%[^']' %d %f %f",item_list->name,&item_list->
                    dam,&item_list->cost,&item_list->weight)!=4)
    {
-      printf("line %d of swords.dat could not be read, exiting\n",line_number);
+      printf("Line %d of %s could not be read\n",line_number,file);
+      printf("Program will now exit\n");
       exit(2);
    }
-   printf("\n");
-
-   char temp;
-   while(temp = fgetc(fpin)!='\n' || temp != '\0');
+   while((temp = fgetc(fpin))!=('\n'));
    item_list->next = NULL;
-   //printf("retuning list\n");
    return(item_list);
 }
 
-item_t *ReadItemsFromFile(FILE *fpin)
+item_t *ReadItemsFromFile(char *file)
 {
+   FILE *fpin;
+   fpin = fopen(file,"r");
+   assert(fpin);
+   fpos_t current_position;
    int line_number = 1;
    item_t *itb=NULL;/* base pointer to the start of the list*/
    item_t *items_list;/*??? NULL list ??? */
-   //printf("starting loop\n");
    while(1)
    {
-      //printf("in loop\n");
-      if(fgetc(fpin)==EOF)      		/*!!! TEST THIS LINE(might run on first loop, not sure) !!!*/
-      {
-         //printf("fpin was null\n");
+      fgetpos(fpin,&current_position);
+      fseek(fpin,8,SEEK_CUR);
+      if(getc(fpin)==EOF)
          break;
-      }
+      else
+         fsetpos(fpin,&current_position);
+
       if (itb==NULL)/*if we haven't done anything yet*/
          {
-         //printf("itb was null\n");
-         itb = items_list = getItem(fpin,line_number);
+         itb = items_list = getItem(fpin,file,line_number);
          }
+
       else/*we have done stuff, lets add more */
       {
-         //printf("itb was NOT null\n");
-         items_list->next = getItem(fpin,line_number);/*create a new item at the end of the last one*/
+   
+         items_list->next = getItem(fpin,file,line_number);/*create a new item at the end of the last one*/
          items_list = items_list->next;/*??? not sure what this does???*/
       }
-      //printf("end of while 1, linenumber++\n");
       line_number++;
    }
-   rewind(fpin);  
+   /*rewind(fpin);*/
+   fclose(fpin);
    return(itb);/*return base pointer to the start of all items*/
 }
 
-
-
-
 void KillAllItems(item_t *itb)
 {
+   while(itb)
+   {
+      item_t *to_be_freed = itb;
+      itb = itb->next;
+      free(to_be_freed); 
+   }
 }
 
 /*
@@ -86,7 +88,7 @@ void KillAllItems(item_t *itb)
  *    31 characters for name
  *    7 digits for damage
  *    13 characters for cost, with 2 decimal places printed
- *    9 characters for weight, with 2 decimal places printes
+ *    9 characters for weight, with 2 decimal places printed
  */
  
 void PrintItemTable
@@ -95,24 +97,35 @@ void PrintItemTable
    item_t *itb     /* list of items to dump to screen */
 )
 {
-   /* declarations here! */
+   int item_number = 1;/*assume one item for now*/
    fprintf(fpout,
    " NUM  NAME                             DAMAGE          COST    WEIGHT\n");
    fprintf(fpout,
    "====  ===============================  ======  ============  ========\n");
    while(1)
    {
-      if(fprintf(fpout, "%s %d %f %f",itb->name,itb->
-                   dam,itb->cost,itb->weight)!=4)/*!!! This line needs to be correctly formated*/
-                   {
-                      printf("Problem Printing a Line");
+      printf("%04d  ",item_number);
+      if(itb->next==NULL)
+      {
+         fprintf(fpout, "%-31s  %-6d  %-12.2f  %-9.2f\n",itb->name,itb->
+                   dam,itb->cost,itb->weight);
+         break;
+      }
+      fprintf(fpout, "%-31s  %-6d  %-12.2f  %-9.2f\n",itb->name,itb->
+                   dam,itb->cost,itb->weight);/*!!! This line needs to be correctly formated*/
+                   /*{
+                      printf("Problem Printing Line Number %d, exiting\n", item_number);
                       exit(2);
                    }
-      printf("\n");
+                   */
       itb = itb->next;
+      item_number++;
+      if(item_number == 9999)
+      {
+         printf("Max Number Of Items Reached\n");
+         break;
+      }
    }
-   /* print all the lines */
-    //printf("Table End\n");
 }
 /*
  * This function prints all items in itb to the a file with name file.  Each
@@ -126,6 +139,23 @@ void WriteItemsToFile
    item_t *itb     /* list of items to be dumped to file */
 )
 {
+
+   FILE *fpinout;
+   fpinout = fopen(file,"w");
+   assert(fpinout);
+   while(1)
+   {
+      if(itb->next==NULL)
+      {
+         fprintf(fpinout, "'%s' %.1d %.1f %.1f\n",itb->name,itb->
+                   dam,itb->cost,itb->weight);
+         break;
+      }
+      fprintf(fpinout, "'%s' %.1d %.1f %.1f\n",itb->name,itb->
+                   dam,itb->cost,itb->weight);
+      itb = itb->next;
+   }
+   fclose(fpinout);
 }
 
 /*
@@ -134,13 +164,12 @@ void WriteItemsToFile
 int CountItems(item_t *itb)/*test this*/
 {
    int Counter = 1;/*for now we are going so assume there is always atleast one item*/
-   while(itb->next!=NUll)
+   while(itb->next!= '\0')
    {
       itb=itb->next;
       Counter++;
    }
-
-
+   return(Counter);
 }
 
 /*
@@ -150,13 +179,13 @@ float SumItemsWeight(item_t *itb)
 {
    float Sum_Weight = 0;
    
-   while(itb->next!=NUll)
+   while(itb->next!='\0')
    {
       Sum_Weight+=itb->weight;
       itb = itb->next;
    }
    Sum_Weight+=itb->weight;/*to get weight of last item, also if there is only 1 item*/
-   return(0.0);
+   return(Sum_Weight);
 }
 
 /*
