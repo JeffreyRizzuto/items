@@ -49,7 +49,7 @@ item_t *ReadItemsFromFile(FILE *fpin)
    while(1)
    {
       //printf("in loop\n");
-      if(fgetc(fpin)==EOF)   			/*!!! TEST THIS LINE(might run on first loop, not sure) !!!*/
+      if(fgetc(fpin)==EOF)      		/*!!! TEST THIS LINE(might run on first loop, not sure) !!!*/
       {
          //printf("fpin was null\n");
          break;
@@ -103,7 +103,7 @@ void PrintItemTable
    while(1)
    {
       if(fprintf(fpout, "%s %d %f %f",itb->name,itb->
-                   dam,itb->cost,itb->weight)!=4)
+                   dam,itb->cost,itb->weight)!=4)/*!!! This line needs to be correctly formated*/
                    {
                       printf("Problem Printing a Line");
                       exit(2);
@@ -131,8 +131,15 @@ void WriteItemsToFile
 /*
  * RETURNS: number of items in list itb
  */
-int CountItems(item_t *itb)
+int CountItems(item_t *itb)/*test this*/
 {
+   int Counter = 1;/*for now we are going so assume there is always atleast one item*/
+   while(itb->next!=NUll)
+   {
+      itb=itb->next;
+      Counter++;
+   }
+
 
 }
 
@@ -141,6 +148,14 @@ int CountItems(item_t *itb)
  */
 float SumItemsWeight(item_t *itb)
 {
+   float Sum_Weight = 0;
+   
+   while(itb->next!=NUll)
+   {
+      Sum_Weight+=itb->weight;
+      itb = itb->next;
+   }
+   Sum_Weight+=itb->weight;/*to get weight of last item, also if there is only 1 item*/
    return(0.0);
 }
 
