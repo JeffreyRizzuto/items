@@ -47,13 +47,13 @@ item_t *ReadItemsFromFile(char *file)
    item_t *items_list;/*the list */
    while(1)
    {
-      fgetpos(fpin,&current_position);
-      if(getc(fpin)==EOF)
+      fgetpos(fpin,&current_position);/*save current position*/
+      if(getc(fpin)==EOF)/*is it EOF?*/
          break;
-      fseek(fpin,8,SEEK_CUR);
-      if(getc(fpin)==EOF)
+      fseek(fpin,8,SEEK_CUR);/*increase pointer by size of one '\n'*/
+      if(getc(fpin)==EOF)/*save current position*/
          break;
-      fsetpos(fpin,&current_position);
+      fsetpos(fpin,&current_position);/*reset fpin*/
       if (itb==NULL)/*if we haven't done anything yet*/
          {
          itb = items_list = getItem(fpin,file,line_number);
