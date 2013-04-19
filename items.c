@@ -41,13 +41,19 @@ item_t *ReadItemsFromFile(char *file)
    fpin = fopen(file,"r");
    if(fpin==NULL)
       return(NULL);
+   fpos_t current_position;
    int line_number = 1;/*# line in file*/
    item_t *itb=NULL;/* base pointer to the start of the list*/
    item_t *items_list;/*the list */
    while(1)
    {
-      if(feof(fpin))
+      fgetpos(fpin,&current_position);
+      if(getc(fpin)==EOF)
          break;
+      fseek(fpin,8,SEEK_CUR);
+      if(getc(fpin)==EOF)
+         break;
+      fsetpos(fpin,&current_position);
       if (itb==NULL)/*if we haven't done anything yet*/
          {
          itb = items_list = getItem(fpin,file,line_number);
