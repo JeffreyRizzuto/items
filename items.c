@@ -97,7 +97,7 @@ void PrintItemTable
    item_t *itb     /* list of items to dump to screen */
 )
 {
-   int item_number = 1;/*assume one item for now*/
+   int item_number = 0;/*assume one item for now*/
    fprintf(fpout,
    " NUM  NAME                             DAMAGE          COST    WEIGHT\n");
    fprintf(fpout,
@@ -193,6 +193,21 @@ float SumItemsWeight(item_t *itb)
  */
 item_t *DelItemAtPos(item_t *itb, int pos)
 {
+   int i;
+   item_t *Basepointer = itb;
+   if((pos == 0))/*If we are changing the very first item*/
+   {
+      Basepointer = itb->next;
+      free (itb);
+      return(Basepointer);
+   }
+   for(i = 0; i < pos-1; i++)/*get to the item right before the spot*/
+   {
+      itb = itb->next;
+   }
+   irb->next = (itb = itb->next);/*News next is what itb would of been*/
+   itb->next = new;/*itb's next is now new*/
+   itb = Basepointer;/*set itb back to the start of the chain*/
    return(itb);
 }
 
@@ -203,7 +218,11 @@ item_t *DelItemAtPos(item_t *itb, int pos)
  */
 item_t *DupItem(item_t *old)
 {
-   return(NULL);
+   item_t *New;
+   New = malloc(sizeof(item_t));
+   memcpy(New,old,sizeof(item_t));
+   New->next = NULL;
+   return(New);
 }
 
 /*
@@ -221,6 +240,20 @@ item_t *AddItemAtPos
    int pos        /* position to add to (starting from 0) */
 )
 {
+   int i;
+   item_t *Basepointer = itb;
+   if((pos == 0))/*If we are changing the very first item*/
+   {
+      new->next = itb;
+      return(new);
+   }
+   for(i = 0; i < pos-1; i++)/*get to the item right before the spot*/
+   {
+      itb = itb->next;
+   }
+   new->next = itb->next;/*News next is what itb would of been*/
+   itb->next = new;/*itb's next is now new*/
+   itb = Basepointer;/*set itb back to the start of the chain*/
    return(itb);
 }
 
