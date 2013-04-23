@@ -195,7 +195,8 @@ item_t *DelItemAtPos(item_t *itb, int pos)
 {
    int i;
    item_t *Basepointer = itb;
-   item_t *temp_pointer;
+
+
    if((pos == 0))/*If we are changing the very first item*/
    {
       Basepointer = itb->next;
@@ -206,9 +207,9 @@ item_t *DelItemAtPos(item_t *itb, int pos)
    {
       itb = itb->next;
    }
-   temp_pointer = itb->next;
-   itb->next = temp_pointer->next;
-   free(temp_pointer);
+   itb->next = (itb = itb->next);/*News next is what itb would of been*/
+   /*** THE NEXT LINE IS WHAT I JUST COMMENTED OUT ***/
+   /*itb->next = new;*//*itb's next is now new*/
    itb = Basepointer;/*set itb back to the start of the chain*/
    return(itb);
 }
