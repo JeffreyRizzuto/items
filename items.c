@@ -269,6 +269,7 @@ item_t *AddItemAtPos
  * This function reverses the item order in list pointed to by itb
  * RETURNS: base pointer of list in opposite order
  * NOTE: the old list is destroyed in making the new!
+ * THIS IS ALSO ONE OF THE 1ST TWO FUNCTIONS WE SHOULD FINISH
  */
 item_t *ReverseItemOrder(item_t *itb)
 {
@@ -279,10 +280,37 @@ item_t *ReverseItemOrder(item_t *itb)
  * This function does greatest-to-least sort of list itb on cost.
  * RETURNS: base pointer of new list.
  * NOTE: old list (itb) is destroyed in process of creating new list!
+ * THIS IS THE ONE OF TWO FUNCTIONS WE SHOULD FINISH FIRST
  */
 item_t *SortItemsByCost(item_t *itb)
 {
-   return(itb);
+   item_t *wpointer;
+   item_t *maxp;
+   item_t *temp;
+
+   if(!itb)
+      return(NULL);
+   else if (itb->next == NULL)
+      return(NULL);
+
+   maxp = itb;
+
+   for (wpointer = itb->next; wpointer; wpointer = wpointer->next)
+   {
+      if (strcmp(maxp->cost, wpointer->cost) < 0) /*passes if 2nd bigger */
+      {
+         printf("In for loop: second items is bigger than first!\n");
+         maxp = wpointer;   /* set the 2nd node as maxpointer */
+         itb->next = wpointer->next;
+         wpointer->next = itb;
+         itb = itb->next;
+      }
+      else if (strcmp(maxp->cost, wpointer->cost) > 0); /*pass 1st is bigger*/
+
+      else (strcmp(maxp->cost, wpointer->cost) == 0); /*cost are equal */
+
+   }
+   return(itb); /* RETURNS POINTER OF NEW LIST */
 }
 
 /*
