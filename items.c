@@ -102,6 +102,8 @@ void PrintItemTable
    " NUM  NAME                             DAMAGE          COST    WEIGHT\n");
    fprintf(fpout,
    "====  ===============================  ======  ============  ========\n");
+   if(!itb)
+      return;
    while(1)
    {
       printf("%04d  ",item_number);
@@ -193,6 +195,9 @@ float SumItemsWeight(item_t *itb)
  */
 item_t *DelItemAtPos(item_t *itb, int pos)
 {
+   if(itb == NULL)
+      return(NULL);
+   assert(pos >= 0 && pos <= CountItems(itb));
    int i;
    item_t *Basepointer = itb;
    item_t *temp_pointer;
@@ -271,9 +276,29 @@ item_t *AddItemAtPos
  * NOTE: the old list is destroyed in making the new!
  * THIS IS ALSO ONE OF THE 1ST TWO FUNCTIONS WE SHOULD FINISH
  */
+
+
 item_t *ReverseItemOrder(item_t *itb)
 {
-   return(itb);
+   item_t *reverse;
+   int i = 0, counter = 0;
+   counter = CountItems(itb);
+   while(itb)
+   {
+      item_t *wp;
+      wp = itb;
+      itb = itb->next;
+      wp->next = reverse; /*NULL was reverse */
+      printf("%p\n", wp->next);
+      reverse = wp;
+      if(i == 0)
+      {
+         reverse->next = NULL;
+         printf("i is equal to counter\n");
+      }
+      i++;
+   }
+   return(reverse);
 }
 
 /*
@@ -284,33 +309,47 @@ item_t *ReverseItemOrder(item_t *itb)
  */
 item_t *SortItemsByCost(item_t *itb)
 {
-   item_t *wpointer;
-   item_t *maxp;
-   item_t *temp;
+   item_t *new_base_pointer,*new_list,*itb_base_copy, *max_item, *new_item;
+   int i,max_position,num_items;
 
-   if(!itb)
-      return(NULL);
-   else if (itb->next == NULL)
-      return(NULL);
-
-   maxp = itb;
-
-   for (wpointer = itb->next; wpointer; wpointer = wpointer->next)
+   max_position = 0;
+   itb_base_copy = itb;
+   new_base_pointer = NULL;
+   num_items = CountItems(itb);
+   while(1)/*loop over ENTIRE list, deletes one each time*/
    {
-      if (strcmp(maxp->cost, wpointer->cost) < 0) /*passes if 2nd bigger */
+      if(itb == NULL)/*when there is no more list*/
+         break;
+      max_item = calloc(1,sizeof(item_t));/*make space for an item to store the max item*/
+      assert(max_item);
+
+      for(i=0;i<num_items;i++,itb = itb->next)/*loop over entire list aw well*/
       {
-         printf("In for loop: second items is bigger than first!\n");
-         maxp = wpointer;   /* set the 2nd node as maxpointer */
-         itb->next = wpointer->next;
-         wpointer->next = itb;
-         itb = itb->next;
+         if(max_item->cost < itb->cost)
+         {
+            max_item = itb;
+            max_position = i;
+         }
       }
-      else if (strcmp(maxp->cost, wpointer->cost) > 0); /*pass 1st is bigger*/
+      new_item = malloc(sizeof(item_t));/*make space for an item in the list*/
+      assert(new_item);
 
-      else (strcmp(maxp->cost, wpointer->cost) == 0); /*cost are equal */
-
+      if(new_base_pointer == NULL)/*FIRST RUN*/
+      {
+         memcpy(new_item,max_item,sizeof(item_t));/*copy the max item to the new item*/
+         new_base_pointer = new_list = new_item;/*sets base pointer to first item in new list*/
+      }
+      else/*ALL OTHER RUNS*/
+      {
+         memcpy(new_item,max_item,sizeof(item_t));/*put the max item into a new item*/
+         new_list->next = new_item;/*put that new item into the list*/
+         new_list = new_list->next;/*move the list into that new item*/
+      }
+         itb = itb_base_copy;/*reset the list that is shrinking*/
+         itb = DelItemAtPos(itb,max_position);/*delete the item we just stored into new from that list*/
+         num_items--;/*we have one less item*/
    }
-   return(itb); /* RETURNS POINTER OF NEW LIST */
+   return(new_base_pointer);/*return the pointer to the start of the new item list*/
 }
 
 /*
