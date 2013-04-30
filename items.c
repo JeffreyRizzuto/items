@@ -278,10 +278,22 @@ item_t *AddItemAtPos
  * THIS IS ALSO ONE OF THE 1ST TWO FUNCTIONS WE SHOULD FINISH
  */
 
-
 item_t *ReverseItemOrder(item_t *itb)
 {
-   return(itb);
+   item_t *reverse;
+   int i = 0;
+   while(itb)
+   {
+      item_t *wp;
+      wp = itb;
+      itb = itb->next;
+      wp->next = reverse; /*NULL was reverse */
+      reverse = wp;
+      if(i == 0)
+         reverse->next = NULL;
+      i++;
+   }
+   return(reverse);
 }
 
 /*
@@ -414,10 +426,13 @@ item_t *SortItemsByName(item_t *itb)
 
       for(i=0;i<num_items;i++,itb = itb->next)/*loop over entire list aw well to get the max item*/
       {
-         printf("FOR SURE HERE\n");
-         if(atoi(max_item->name) < atoi(itb->name))
+         /*if THIS is bigger than THAT*/
+         if(strcmp(itb->name,max_item->name) > 0)
+         {
+            /*replace THAT with THIS*/
             memcpy(max_item->name,itb->name,32*sizeof(char));
-         printf("HERE\n");
+            max_position = i;
+         }
       }
       new_item = malloc(sizeof(item_t));/*make space for an item in the list*/
       assert(new_item);
@@ -439,5 +454,6 @@ item_t *SortItemsByName(item_t *itb)
             itb_base_copy = itb;
          num_items--;/*we have one less item*/
    }
+   new_base_pointer = ReverseItemOrder(new_base_pointer);/*cheap way to make it least - greatest*/
    return(new_base_pointer);/*return the pointer to the start of the new item list*/
 }
