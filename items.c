@@ -195,7 +195,6 @@ float SumItemsWeight(item_t *itb)
  */
 item_t *DelItemAtPos(item_t *itb, int pos)
 {
-   printf("IN DELETE POS IS %d\n",pos);
    if(itb == NULL)
       return(NULL);
    assert(pos >= 0 && pos <= CountItems(itb));
@@ -322,7 +321,7 @@ item_t *SortItemsByCost(item_t *itb)
       {
          if(max_item->cost < itb->cost)
          {
-            max_item = itb;/*this will eventually be the max item*/
+            memcpy(max_item,itb,sizeof(item_t));
             max_position = i;/*this is the position of max item*/
          }
       }
@@ -344,6 +343,7 @@ item_t *SortItemsByCost(item_t *itb)
          itb = DelItemAtPos(itb,max_position);/*delete the item we just stored into new from that list*/
          if(max_position ==0)/*set base pointer to new base pointer*/
             itb_base_copy = itb;
+         free(max_item);
          num_items--;/*we have one less item*/
    }
    return(new_base_pointer);/*return the pointer to the start of the new item list*/
@@ -374,7 +374,7 @@ item_t *SortItemsByWeight(item_t *itb)
       {
          if(max_item->weight < itb->weight)
          {
-            max_item = itb;
+            memcpy(max_item,itb,sizeof(item_t));
             max_position = i;
          }
       }
@@ -396,6 +396,7 @@ item_t *SortItemsByWeight(item_t *itb)
          itb = DelItemAtPos(itb,max_position);/*delete the item we just stored into new from that list*/
          if(max_position==0)/*set base pointer to new base pointer*/
             itb_base_copy = itb;
+         free(max_item);
          num_items--;/*we have one less item*/
    }
    return(new_base_pointer);/*return the pointer to the start of the new item list*/
@@ -430,7 +431,7 @@ item_t *SortItemsByName(item_t *itb)
          if(strcmp(itb->name,max_item->name) > 0)
          {
             /*replace THAT with THIS*/
-            memcpy(max_item->name,itb->name,32*sizeof(char));
+            memcpy(max_item,itb,sizeof(item_t));
             max_position = i;
          }
       }
@@ -452,6 +453,7 @@ item_t *SortItemsByName(item_t *itb)
          itb = DelItemAtPos(itb,max_position);/*delete the item we just stored into new from that list*/
          if(max_position==0)
             itb_base_copy = itb;
+         free(max_item);
          num_items--;/*we have one less item*/
    }
    new_base_pointer = ReverseItemOrder(new_base_pointer);/*cheap way to make it least - greatest*/
