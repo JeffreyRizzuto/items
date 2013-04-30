@@ -281,21 +281,16 @@ item_t *AddItemAtPos
 item_t *ReverseItemOrder(item_t *itb)
 {
    item_t *reverse;
-   int i = 0, counter = 0;
-   counter = CountItems(itb);
+   int i = 0;
    while(itb)
    {
       item_t *wp;
       wp = itb;
       itb = itb->next;
       wp->next = reverse; /*NULL was reverse */
-      printf("%p\n", wp->next);
       reverse = wp;
       if(i == 0)
-      {
          reverse->next = NULL;
-         printf("i is equal to counter\n");
-      }
       i++;
    }
    return(reverse);
