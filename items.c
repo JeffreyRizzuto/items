@@ -354,7 +354,48 @@ item_t *SortItemsByCost(item_t *itb)
  */
 item_t *SortItemsByWeight(item_t *itb)
 {
-   return(itb);
+   item_t *new_base_pointer,*new_list,*itb_base_copy, *max_item, *new_item;
+   int i,max_position,num_items;
+
+   max_position = 0;
+   itb_base_copy = itb;
+   new_base_pointer = NULL;
+   num_items = CountItems(itb);
+   while(1)/*loop over ENTIRE list, deletes one each time*/
+   {
+      if(itb == NULL)/*when there is no more list*/
+         break;
+      max_item = calloc(1,sizeof(item_t));/*make space for an item to store the max item*/
+      assert(max_item);
+
+      for(i=0;i<num_items;i++,itb = itb->next)/*loop over entire list aw well*/
+      {
+         if(max_item->weight < itb->weight)
+         {
+            max_item = itb;
+            max_position = i;
+         }
+      }
+      new_item = malloc(sizeof(item_t));/*make space for an item in the list*/
+      assert(new_item);
+
+      if(new_base_pointer == NULL)/*FIRST RUN*/
+      {
+         memcpy(new_item,max_item,sizeof(item_t));/*copy the max item to the new item*/
+         new_base_pointer = new_list = new_item;/*sets base pointer to first item in new list*/
+      }
+      else/*ALL OTHER RUNS*/
+      {
+         memcpy(new_item,max_item,sizeof(item_t));/*put the max item into a new item*/
+         new_list->next = new_item;/*put that new item into the list*/
+         new_list = new_list->next;/*move the list into that new item*/
+      }
+         itb = itb_base_copy;/*reset the list that is shrinking*/
+         /*printf("max_position: %d\n", max_position);*/
+         itb = DelItemAtPos(itb,max_position);/*delete the item we just stored into new from that list*/
+         num_items--;/*we have one less item*/
+   }
+   return(new_base_pointer);/*return the pointer to the start of the new item list*/
 }
 
 /*
