@@ -280,7 +280,7 @@ item_t *AddItemAtPos
 item_t *ReverseItemOrder(item_t *itb)
 {
    item_t *reverse;
-   int i = 0;
+   /* int i = 0; */
    while(itb)
    {
       item_t *wp;
