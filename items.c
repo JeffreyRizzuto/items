@@ -288,8 +288,10 @@ item_t *ReverseItemOrder(item_t *itb)
       itb = itb->next;
       wp->next = reverse; /*NULL was reverse */
       reverse = wp;
+      /* Not needed i think
       if(i == 0)
          reverse->next = NULL;
+      */
       i++;
    }
    return(reverse);
