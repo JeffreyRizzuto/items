@@ -1,0 +1,25 @@
+MatthewBanuelos:assignment3 matthewbanuelos$ ./xpqueue data.txt
+In pqinsert
+In getnode
+Address of n is: 140734627404496
+Returned from getting node
+Inserting #: 5
+List's info is: 5
+Current Queue Is: 5 
+In pqinsert
+In getnode
+Address of n is: 140734627404496
+Returned from getting node
+Inserting #: 3
+List's info is: 3
+Current Queue Is: 3 
+In pqinsert
+In getnode
+Address of n is: 140734627404496
+Returned from getting node
+Inserting #: 19
+List's info is: 19
+Current Queue Is: 19 
+In pqmindelete
+INVALID DELETION: CANNOT DELETE EMPTY LIST
+MatthewBanuelos:assignment3 matthewbanuelos$
