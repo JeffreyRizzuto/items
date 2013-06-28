@@ -8,7 +8,7 @@ typedef struct node NODE;
 struct node
 {
   int info;
-	NODE *next;
+  NODE *next;
 };
 typedef struct node *NODEPTR;
 NODEPTR list;
