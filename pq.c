@@ -10,18 +10,16 @@ struct node
   int info;
   NODE *next;
 };
-typedef struct node *NODEPTR;
-NODEPTR list;
 
-NODEPTR getnode()
+NODE *getnode()
 {
 	printf("In getnode\n");
-	NODEPTR p;
-	p = (NODEPTR) malloc(sizeof(NODE));
+	NODE *p;
+	p = malloc(sizeof(NODE));
 	return(p);
 }
 
-void printQueue(NODEPTR list)
+void printQueue()
 {
 	NODEPTR i;
 	i = list;
@@ -45,7 +43,7 @@ void pqinsert(NODEPTR list, FILE *file)
 {
 	printf("In pqinsert\n");
 	int x;
-	NODEPTR n;
+	NODE *n;
 	n = getnode();
 	printf("Address of n is: %lu\n", UL&n);
 	printf("Returned from getting node\n");
@@ -58,10 +56,12 @@ void pqinsert(NODEPTR list, FILE *file)
 	printQueue(list);
 }
 
-void pqmindelete(NODEPTR list)
+void pqmindelete(NODE *list)
 {
 	printf("In pqmindelete\n");
+	int minpos = 0;
 	int x;
+	int minval =0;
 	if(list == NULL)
 	{
 		printf("INVALID DELETION: CANNOT DELETE EMPTY LIST\n");
@@ -72,19 +72,29 @@ void pqmindelete(NODEPTR list)
 		printf("INVALID DELETION: CANNOT DELETE A SINGLE ITEM LIST\n");
 		exit(2);
 	}
-	x = list->info;
-	NODEPTR temp;
-	NODEPTR min;
-	temp = min = list;
-	while((temp->next) != NULL)
+	
+	NODE *temp, *temp2;
+	temp = list;
+	
+	for(x=0;temp->next != NULL; x++)
+	{
+		if((temp->info) < minval)
+		{
+			minval = temp->info;
+			min = x;
+		}
+		temp = temp->next;
+	}
+	temp = list;
+	for(x=0;x<min-1;x++)
 	{
 		temp = temp->next;
-		if((temp->info) < x)
-		{
-			x = temp->info;
-			min = temp;
-		}
 	}
+	
+	temp2 = temp;
+	temp = temp->next;
+	temp2->next = temp->next;
+	free(temp);
 	printf("Min. info is: %d\n", x);
 	printQueue(list);
 }
@@ -94,7 +104,7 @@ int main(int argc, char* argv[])
 	FILE *file;
 	file = fopen(argv[1], "r");
 
-	list = NULL;
+	NODE *list = NULL;
 
 
 	while(!feof(file))
