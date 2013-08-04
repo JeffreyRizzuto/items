@@ -157,8 +157,8 @@ void WriteItemsToFile
  */
 int CountItems(item_t *itb)/*test this*/
 {
-   int Counter = 1;/*for now we are going so assume there is always atleast one item*/
-   while(itb->next!= '\0')
+   int Counter = 0;/*for now we are going so assume there is always atleast one item*/
+   while(itb)
    {
       itb=itb->next;
       Counter++;
@@ -173,12 +173,11 @@ float SumItemsWeight(item_t *itb)
 {
    float Sum_Weight = 0;
    
-   while(itb->next!='\0')
+   while(itb)
    {
       Sum_Weight+=itb->weight;
       itb = itb->next;
    }
-   Sum_Weight+=itb->weight;/*to get weight of last item, also if there is only 1 item*/
    return(Sum_Weight);
 }
 
